@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Applications - E Gram Panchayat</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+    // ✅ Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBrUUapAImi3SzUOCiomY2BuUWWOxCTEGU",
+  authDomain: "digital-e-gram-panchayat-ce207.firebaseapp.com",
+  projectId: "digital-e-gram-panchayat-ce207",
+  storageBucket: "digital-e-gram-panchayat-ce207.firebasestorage.app",
+  messagingSenderId: "562639846118",
+  appId: "1:562639846118:web:a7db9600e735acf4511927",
+  measurementId: "G-M1ZJTQG9EJ",
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ✅ Load applications of logged-in user
+    window.onload = function () {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) return window.location.href = "login.html";
+
+        const appsContainer = document.getElementById("apps");
+        appsContainer.innerHTML = "<h3>My Applications</h3>";
+
+        const q = query(collection(db, "applications"), where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          appsContainer.innerHTML += "<p>No applications found.</p>";
+        } else {
+          querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const appliedDate = data.appliedAt?.toDate().toLocaleDateString() || "N/A";
+            const div = document.createElement("div");
+            div.innerHTML = `
+              <strong>Service:</strong> ${data.serviceTitle}<br>
+              <strong>Status:</strong> ${data.status}<br>
+              <strong>Date:</strong> ${appliedDate}
+              <hr>
+            `;
+            appsContainer.appendChild(div);
+          });
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+  <h2>My Applications</h2>
+  <div id="apps">Loading...</div>
+</body>
+</html>

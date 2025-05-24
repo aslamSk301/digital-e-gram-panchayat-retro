@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Staff Dashboard - E Gram Panchayat</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Courier Prime', monospace;
+      background: linear-gradient(45deg, #2c1810, #1a0f08);
+      color: #00ff41;
+      min-height: 100vh;
+      padding: 20px;
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Retro grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Retro scan lines */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 65, 0.05) 2px,
+        rgba(0, 255, 65, 0.05) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+      animation: scanlines 0.1s linear infinite;
+    }
+    
+    @keyframes scanlines {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(4px); }
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ff41;
+      border-radius: 15px;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.5),
+        inset 0 0 20px rgba(0, 255, 65, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+      animation: rotate 4s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .header h1 {
+      font-size: 2.5em;
+      font-weight: 700;
+      text-shadow: 0 0 10px #00ff41;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header .subtitle {
+      font-size: 1.2em;
+      opacity: 0.8;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 15px 25px;
+      border: 1px solid #00ff41;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #00ff41;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .applications-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ff41;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0 25px rgba(0, 255, 65, 0.4);
+    }
+    
+    .section-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00ff41;
+      text-shadow: 0 0 8px #00ff41;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .application-card {
+      background: rgba(0, 20, 0, 0.9);
+      border: 1px solid #00ff41;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    }
+    
+    .application-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 255, 65, 0.4);
+      border-color: #00ff80;
+    }
+    
+    .application-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00ff41, transparent, #00ff41);
+      animation: borderGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes borderGlow {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .service-title {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #e5ff00;
+      text-shadow: 0 0 5px #00ff80;
+    }
+    
+    .card-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .info-label {
+      font-size: 0.9em;
+      color: #00ff41;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .info-value {
+      font-size: 1.1em;
+      color: #ffffff;
+      font-weight: 700;
+    }
+    
+    .status-badge {
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid;
+      text-align: center;
+      animation: statusGlow 3s ease-in-out infinite;
+    }
+    
+    @keyframes statusGlow {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    
+    .status-pending {
+      background: rgba(255, 165, 0, 0.2);
+      color: #ffa500;
+      border-color: #ffa500;
+      box-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+    }
+    
+    .status-processing {
+      background: rgba(0, 123, 255, 0.2);
+      color: #007bff;
+      border-color: #007bff;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+    
+    .status-completed {
+      background: rgba(0, 255, 65, 0.2);
+      color: #00ff41;
+      border-color: #00ff41;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+    
+    .status-hold {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff0000;
+      border-color: #ff0000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+    
+    .action-panel {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(0, 255, 65, 0.3);
+    }
+    
+    .retro-select {
+      background: rgba(0, 0, 0, 0.9);
+      color: #00ff41;
+      border: 2px solid #00ff41;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-family: 'Courier Prime', monospace;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    }
+    
+    .retro-select:hover, .retro-select:focus {
+      outline: none;
+      border-color: #00ff80;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+      transform: scale(1.02);
+    }
+    
+    .retro-select option {
+      background: #000;
+      color: #00ff41;
+      padding: 10px;
+    }
+    
+    .update-label {
+      color: #00ff41;
+      font-weight: 700;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    
+    .loading {
+      text-align: center;
+      font-size: 1.5em;
+      color: #00ff41;
+      padding: 50px;
+      animation: loading 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes loading {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    .no-applications {
+      text-align: center;
+      color: #00ff41;
+      font-size: 1.2em;
+      padding: 40px;
+      opacity: 0.8;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2em;
+      }
+      
+      .card-body {
+        grid-template-columns: 1fr;
+      }
+      
+      .status-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .action-panel {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+    // ✅ Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrUUapAImi3SzUOCiomY2BuUWWOxCTEGU",
+      authDomain: "digital-e-gram-panchayat-ce207.firebaseapp.com",
+      projectId: "digital-e-gram-panchayat-ce207",
+      storageBucket: "digital-e-gram-panchayat-ce207.firebasestorage.app",
+      messagingSenderId: "562639846118",
+      appId: "1:562639846118:web:a7db9600e735acf4511927",
+      measurementId: "G-M1ZJTQG9EJ",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.onload = function () {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) return window.location.href = "login.html";
+        loadApplications();
+      });
+    };
+
+    // ✅ Load All Applications
+    async function loadApplications() {
+      const container = document.getElementById("applications");
+      container.innerHTML = '<div class="loading">>>> LOADING APPLICATIONS...</div>';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "applications"));
+        
+        if (querySnapshot.empty) {
+          container.innerHTML = '<div class="no-applications">>>> NO APPLICATIONS FOUND</div>';
+          return;
+        }
+
+        container.innerHTML = "";
+
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const div = document.createElement("div");
+          div.className = "application-card";
+          
+          const statusClass = getStatusClass(data.status || 'Pending');
+          
+          div.innerHTML = `
+            <div class="card-header">
+              <div class="service-title">${data.serviceTitle || 'Unknown Service'}</div>
+              <div class="status-badge ${statusClass}">${data.status || 'Pending'}</div>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <span class="info-label">User ID</span>
+                <span class="info-value">${data.userId || 'N/A'}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Application ID</span>
+                <span class="info-value">${docSnap.id}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Date Submitted</span>
+                <span class="info-value">${formatDate(data.appliedAt)}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Priority</span>
+                <span class="info-value">Normal</span>
+              </div>
+            </div>
+            <div class="action-panel">
+              <span class="update-label">>>> UPDATE STATUS:</span>
+              <select class="retro-select" onchange="updateStatus('${docSnap.id}', this.value)">
+                <option value="">--SELECT ACTION--</option>
+                <option value="Processing">PROCESSING</option>
+                <option value="Completed">COMPLETED</option>
+                <option value="On Hold">ON HOLD</option>
+                <option value="Pending">PENDING</option>
+              </select>
+            </div>
+          `;
+          
+          container.appendChild(div);
+        });
+      } catch (error) {
+        container.innerHTML = '<div class="no-applications">>>> ERROR LOADING APPLICATIONS</div>';
+        console.error("Error loading applications:", error);
+      }
+    }
+
+    function getStatusClass(status) {
+      switch (status.toLowerCase()) {
+        case 'pending': return 'status-pending';
+        case 'processing': return 'status-processing';
+        case 'completed': return 'status-completed';
+        case 'on hold': return 'status-hold';
+        default: return 'status-pending';
+      }
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return 'N/A';
+      try {
+        return new Date(timestamp.seconds * 1000).toLocaleDateString();
+      } catch {
+        return 'N/A';
+      }
+    }
+
+    // ✅ Update status with retro feedback
+    window.updateStatus = async function (appId, status) {
+      if (!status) return;
+      
+      try {
+        await updateDoc(doc(db, "applications", appId), {
+          status: status,
+          lastUpdated: new Date()
+        });
+        
+        // Retro-style alert
+        showRetroAlert(`>>> STATUS UPDATED TO: ${status.toUpperCase()}`);
+        loadApplications();
+      } catch (error) {
+        showRetroAlert(">>> ERROR: FAILED TO UPDATE STATUS");
+        console.error("Error updating status:", error);
+      }
+    };
+
+    function showRetroAlert(message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.95);
+        color: #00ff41;
+        padding: 20px 40px;
+        border: 2px solid #00ff41;
+        border-radius: 10px;
+        font-family: 'Courier Prime', monospace;
+        font-size: 1.2em;
+        font-weight: 700;
+        z-index: 9999;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(0, 255, 65, 0.5);
+        animation: alertPulse 0.5s ease-in-out;
+      `;
+      alertDiv.textContent = message;
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes alertPulse {
+          0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+          100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.remove();
+        style.remove();
+      }, 2000);
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>STAFF TERMINAL</h1>
+      <div class="subtitle">E-GRAM PANCHAYAT ADMINISTRATION SYSTEM</div>
+    </div>
+    
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-dot"></div>
+        <span>SYSTEM ONLINE</span>
+      </div>
+      <div class="status-item">
+        <span>USER: STAFF_ADMIN</span>
+      </div>
+      <div class="status-item">
+        <span id="current-time"></span>
+      </div>
+    </div>
+    
+    <div class="applications-container">
+      <div class="section-title">>>> APPLICATION MANAGEMENT</div>
+      <div id="applications">
+        <div class="loading">>>> INITIALIZING SYSTEM...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Update time
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('current-time').textContent = 
+        now.toLocaleTimeString('en-US', { hour12: false });
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
