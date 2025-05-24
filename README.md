@@ -29,7 +29,7 @@ To bring transparency, accessibility, and digitization to rural village administ
 | JavaScript (ES6 Modules) | Logic & Firebase SDK integration     |
 | Firebase Auth  | User registration and login              |
 | Firestore DB   | Real-time NoSQL data storage             |
-| Firebase Hosting | Deployment of the web app             |
+
 
 ---
 
