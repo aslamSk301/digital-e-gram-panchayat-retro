@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital E Gram Panchayat - Terminal Access</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Orbitron', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      color: #00ff41;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      animation: backgroundPulse 8s ease-in-out infinite;
+    }
+    
+    @keyframes backgroundPulse {
+      0%, 100% { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); }
+      50% { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0a0a0a 100%); }
+    }
+    
+    /* Retro grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 65, 0.15) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.15) 2px, transparent 2px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: -1;
+      animation: gridMove 20s linear infinite;
+    }
+    
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
+    
+    /* Retro scan lines */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 255, 65, 0.08) 3px,
+        rgba(0, 255, 65, 0.08) 6px
+      );
+      pointer-events: none;
+      z-index: 1;
+      animation: scanlines 0.15s linear infinite;
+    }
+    
+    @keyframes scanlines {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(6px); }
+    }
+    
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      width: 100%;
+      padding: 40px;
+    }
+    
+    .terminal-window {
+      background: rgba(0, 0, 0, 0.95);
+      border: 3px solid #00ff41;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 
+        0 0 50px rgba(0, 255, 65, 0.4),
+        inset 0 0 50px rgba(0, 255, 65, 0.1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    
+    .terminal-window::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #00ff41, #00ffff, #ff00ff, #ffff00, #00ff41);
+      border-radius: 20px;
+      z-index: -1;
+      animation: borderRotate 4s linear infinite;
+    }
+    
+    @keyframes borderRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #00ff41;
+    }
+    
+    .terminal-dots {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    
+    .dot.red {
+      background: #ff0000;
+      box-shadow: 0 0 10px #ff0000;
+    }
+    
+    .dot.yellow {
+      background: #ffff00;
+      box-shadow: 0 0 10px #ffff00;
+      animation-delay: 0.3s;
+    }
+    
+    .dot.green {
+      background: #00ff41;
+      box-shadow: 0 0 10px #00ff41;
+      animation-delay: 0.6s;
+    }
+    
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    .terminal-title {
+      color: #00ff41;
+      font-size: 1.2em;
+      font-weight: 700;
+      text-shadow: 0 0 10px #00ff41;
+    }
+    
+    .main-title {
+      font-size: 3.5em;
+      font-weight: 900;
+      color: #00ff41;
+      text-shadow: 
+        0 0 20px #00ff41,
+        0 0 40px #00ff41,
+        0 0 60px #00ff41;
+      margin-bottom: 20px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+      letter-spacing: 3px;
+    }
+    
+    @keyframes titleGlow {
+      0% { 
+        text-shadow: 
+          0 0 20px #00ff41,
+          0 0 40px #00ff41,
+          0 0 60px #00ff41;
+      }
+      100% { 
+        text-shadow: 
+          0 0 30px #00ff41,
+          0 0 60px #00ff41,
+          0 0 90px #00ff41;
+      }
+    }
+    
+    .emoji-icon {
+      font-size: 1.2em;
+      display: inline-block;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+    
+    .subtitle {
+      font-size: 1.2em;
+      color: #00ffff;
+      margin-bottom: 50px;
+      font-family: 'Courier Prime', monospace;
+      text-shadow: 0 0 10px #00ffff;
+      animation: typewriter 4s steps(40) 1s both;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #00ffff;
+      animation: typewriter 4s steps(50) 1s both, blinkCursor 1s step-end infinite;
+    }
+    
+    @keyframes typewriter {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+    
+    @keyframes blinkCursor {
+      0%, 50% { border-color: #00ffff; }
+      51%, 100% { border-color: transparent; }
+    }
+    
+    .button-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    
+    .retro-btn {
+      display: inline-block;
+      padding: 20px 40px;
+      background: linear-gradient(45deg, #000000, #1a1a1a);
+      color: #00ff41;
+      text-decoration: none;
+      border: 2px solid #00ff41;
+      border-radius: 12px;
+      font-size: 1.3em;
+      font-weight: 700;
+      font-family: 'Orbitron', monospace;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.3),
+        inset 0 0 20px rgba(0, 255, 65, 0.1);
+    }
+    
+    .retro-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.4), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .retro-btn:hover::before {
+      left: 100%;
+    }
+    
+    .retro-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 
+        0 10px 30px rgba(0, 255, 65, 0.5),
+        inset 0 0 30px rgba(0, 255, 65, 0.2);
+      border-color: #00ffff;
+      color: #00ffff;
+      text-shadow: 0 0 15px currentColor;
+    }
+    
+    .retro-btn:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+    
+    .login-btn {
+      background: linear-gradient(45deg, #001100, #003300);
+    }
+    
+    .register-btn {
+      background: linear-gradient(45deg, #110011, #330033);
+      border-color: #ff00ff;
+      color: #ff00ff;
+      box-shadow: 
+        0 0 20px rgba(255, 0, 255, 0.3),
+        inset 0 0 20px rgba(255, 0, 255, 0.1);
+    }
+    
+    .register-btn::before {
+      background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.4), transparent);
+    }
+    
+    .register-btn:hover {
+      border-color: #ffff00;
+      color: #ffff00;
+      box-shadow: 
+        0 10px 30px rgba(255, 255, 0, 0.5),
+        inset 0 0 30px rgba(255, 255, 0, 0.2);
+    }
+    
+    .system-info {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-family: 'Courier Prime', monospace;
+      color: #00ff41;
+      font-size: 0.9em;
+      opacity: 0.7;
+      z-index: 10;
+    }
+    
+    .system-info div {
+      margin-bottom: 5px;
+    }
+    
+    .status-online {
+      color: #00ff41;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    
+    .floating-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #00ff41;
+      border-radius: 50%;
+      animation: float 10s linear infinite;
+      opacity: 0.6;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+      }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 2.5em;
+        letter-spacing: 1px;
+      }
+      
+      .subtitle {
+        font-size: 1.1em;
+      }
+      
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      
+      .retro-btn {
+        width: 80%;
+        text-align: center;
+      }
+      
+      .terminal-window {
+        padding: 20px;
+        margin: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .main-title {
+        font-size: 2em;
+      }
+      
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-particles"></div>
+  
+  <div class="container">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <div class="terminal-title">GRAM_PANCHAYAT_TERMINAL_v2.1</div>
+      </div>
+      
+      <h1 class="main-title">
+        <span class="emoji-icon">🌿</span>
+        DIGITAL E GRAM PANCHAYAT
+      </h1>
+      
+      <p class="subtitle"> >> WELCOME TO THE OFFICIAL PORTAL OF GRAM PANCHAYAT SERVICES </p>
+
+      <div class="button-container">
+        <a href="./client/login.html" class="retro-btn login-btn">
+          >>> LOGIN
+        </a>
+        <a href="./client/register.html" class="retro-btn register-btn">
+          >>> REGISTER
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="system-info">
+    <div>SYSTEM: <span class="status-online">ONLINE</span></div>
+    <div>VERSION: v2.1.0</div>
+    <div>STATUS: OPERATIONAL</div>
+    <div id="current-time"></div>
+  </div>
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particleContainer = document.querySelector('.floating-particles');
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particleContainer.appendChild(particle);
+      }
+    }
+    
+    // Update time
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+      const dateString = now.toLocaleDateString('en-US');
+      document.getElementById('current-time').textContent = `TIME: ${timeString} | ${dateString}`;
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      createParticles();
+      updateTime();
+      setInterval(updateTime, 1000);
+      
+      // Add some retro sound effect simulation on button hover (visual feedback)
+      const buttons = document.querySelectorAll('.retro-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+          this.style.animation = 'none';
+          setTimeout(() => {
+            this.style.animation = '';
+          }, 10);
+        });
+      });
+    });
+    
+    // Konami code easter egg
+    let konamiCode = [];
+    const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    
+    document.addEventListener('keydown', function(e) {
+      konamiCode.push(e.keyCode);
+      if (konamiCode.length > konamiSequence.length) {
+        konamiCode.shift();
+      }
+      
+      if (konamiCode.join(',') === konamiSequence.join(',')) {
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => {
+          document.body.style.filter = '';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
